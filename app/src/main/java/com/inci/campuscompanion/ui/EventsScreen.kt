@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +26,32 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.inci.campuscompanion.model.CampusEvent
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
+
+fun formatDate(dateString: String): String {
+    if (dateString.isBlank()) return "TBD"
+    return try {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }
+        val outputFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault()).apply {
+            timeZone = TimeZone.getDefault()
+        }
+        val date: Date? = inputFormat.parse(dateString)
+        if (date != null) {
+            outputFormat.format(date)
+        } else if (dateString.length >= 10) {
+            dateString.substring(0, 10)
+        } else {
+            dateString
+        }
+    } catch (_: Exception) {
+        if (dateString.length >= 10) dateString.substring(0, 10) else dateString
+    }
+}
 
 @Composable
 fun EventsScreen(
@@ -130,21 +155,22 @@ fun EventCard(
                 style = MaterialTheme.typography.titleMedium
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Date: ${event.date}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = "Location: ${event.location}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            Text(
+                text = "Location: ${event.location}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = "From: ${formatDate(event.startDate)}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = "To: ${formatDate(event.endDate)}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
             if (event.description.isNotBlank()) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(

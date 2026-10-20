@@ -8,9 +8,10 @@ import kotlin.coroutines.cancellation.CancellationException
 fun EventDto.toDomain(): CampusEvent {
     return CampusEvent(
         id = this.id ?: "",
-        title = this.title ?: "Untitled Event",
-        date = this.date ?: "TBD",
-        location = this.location ?: "TBD",
+        title = this.name ?: "Untitled Event",
+        startDate = this.startingDate ?: "",
+        endDate = this.endingDate ?: "",
+        location = this.address ?: "Location TBD",
         description = this.description ?: ""
     )
 }

@@ -7,11 +7,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 
 interface CampusApi {
-    @GET("events")
+    @GET("events/event")
     suspend fun getEvents(): List<EventDto>
 
     companion object {
-        const val BASE_URL = "https://api.campuscompanion.com/"
+        const val BASE_URL = "https://6ad70838f71f154ac4879fac.mockapi.io/api/v1/"
 
         fun create(baseUrl: String = BASE_URL): CampusApi {
             val loggingInterceptor = HttpLoggingInterceptor().apply {
